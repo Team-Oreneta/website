@@ -6,6 +6,7 @@ const ejs = require('ejs');
 const srcDir = path.join(__dirname, 'src');
 const templatesDir = path.join(srcDir, 'templates');
 const outputDir = path.join(__dirname, 'dist');
+const staticDir = path.join(srcDir, 'static');
 
 // Ensure the output directory exists
 if (!fs.existsSync(outputDir)) {
@@ -36,7 +37,7 @@ pages.forEach(page => {
     const templatePath = path.join(templatesDir, "base.ejs");
     const outputPath = path.join(outputDir, page.filename);
 
-    ejs.renderFile(templatePath, { body: page.body, title: page.name }, (err, str) => {
+    ejs.renderFile(templatePath, { static: staticDir, body: page.body, title: page.name, description: "We make cool stuff!" }, (err, str) => {
         if (err) {
             console.error(`Error rendering ${templatePath}:`, err);
             return;
@@ -46,3 +47,6 @@ pages.forEach(page => {
         console.log(`Generated ${outputPath}`);
     });
 });
+
+// Copy static files
+fs.copySync(staticDir, path.join(outputDir, 'static'));
