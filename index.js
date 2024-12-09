@@ -11,6 +11,7 @@ const staticDir = 'static';
 // Ensure the output directory exists
 if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir);
+    fs.mkdirSync(path.join(outputDir, staticDir));
 }
 
 const pagesDir = path.join(srcDir, 'pages');
@@ -50,4 +51,9 @@ pages.forEach(page => {
 });
 
 // Copy static files
-fs.copySync(staticDir, path.join(outputDir, 'static'));
+const staticSrcDir = path.join(srcDir, staticDir);
+if (fs.existsSync(staticSrcDir)) {
+    fs.copySync(staticSrcDir, path.join(outputDir, staticDir));
+} else {
+    console.warn(`Static directory not found: ${staticSrcDir}`);
+}
