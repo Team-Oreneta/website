@@ -7,6 +7,7 @@
     --gradient-dark: #9DAAD3;
     --gradient-light: #DBFFFE;
     --text-color: #DBFFFE;
+    --border-color: #DBFFFE;
 }
 
 body {
@@ -26,14 +27,20 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
     font-weight: 100;
+    margin: 0;
 }
 .main {
     display: flex;
+    flex-direction: column;
     flex-grow: 1;
     min-width: 75%;
     min-height: 80%;
     margin-inline: auto;
-    
+    padding: 1vh;
+    border: var(--border-color) 1px solid;
+}
+.main p {
+    margin: 0;
 }
 .footer {
     margin-inline: auto;
