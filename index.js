@@ -4,7 +4,6 @@ const ejs = require('ejs');
 
 // Directory paths
 const srcDir = path.join(__dirname, 'src');
-const cleanSrcDir = path.join('src');
 const templatesDir = path.join(srcDir, 'templates');
 const outputDir = path.join(__dirname, 'dist');
 const staticDir = 'static';
