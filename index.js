@@ -7,7 +7,7 @@ const { read } = require('fs');
 const srcDir = path.join(__dirname, 'src');
 const templatesDir = path.join(srcDir, 'templates');
 const outputDir = path.join(__dirname, 'dist');
-const staticDir = 'static';
+const staticDir = '/static';
 
 // Ensure the output directory exists
 if (!fs.existsSync(outputDir)) {
