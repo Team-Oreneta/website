@@ -7,8 +7,8 @@ const { read } = require('fs');
 const srcDir = path.join(__dirname, 'src');
 const templatesDir = path.join(srcDir, 'templates');
 const outputDir = path.join(__dirname, 'dist');
-const staticDir = '/static';
-
+const staticDir = 'static';
+const outputStaticDir = path.join("website", staticDir);
 // Ensure the output directory exists
 if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir);
@@ -44,7 +44,7 @@ function readDir(dir) {
 function renderPage(page) {
     const templatePath = path.join(templatesDir, "base.ejs");
     const outputPath = path.join(outputDir, page.cleanPath);
-    var arguments = { static: staticDir, body: null, title: page.name, description: "We make cool stuff!" };
+    var arguments = { static: outputStaticDir, body: null, title: page.name, description: "We make cool stuff!" };
     arguments.body = ejs.render(page.body, arguments);
     fs.ensureDirSync(path.dirname(outputPath));
     ejs.renderFile(templatePath, arguments, (err, str) => {
