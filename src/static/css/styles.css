@@ -49,6 +49,12 @@ a {
     margin-inline: auto;
     width:fit-content;
 }
+.logo {
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .row-container {
     display: flex;
