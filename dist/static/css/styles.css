@@ -55,6 +55,10 @@ a {
     justify-content: center;
     align-items: center;
 }
+.index-links {
+    border-left: var(--border-color) 1px dashed;
+    padding: 1vh;
+}
 
 .row-container {
     display: flex;
