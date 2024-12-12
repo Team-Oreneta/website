@@ -1,4 +1,14 @@
-<%- include('header') %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Oreneta - <%= title.charAt(0).toUpperCase() + title.slice(1) %></title>
+    <link rel="stylesheet" href="<%= static %>/css/styles.css">
+    <meta name="description" content="<%= description %>">
+    <link rel="icon" href="<%= static %>/logos/favicon.png" type="image/x-icon">
+</head>
+<body>
 <img class="logo" draggable="false" src="<%= static %>/logos/TeamOreneta.svg">
 <div class="links">
     <a href="/">Home</a>
@@ -9,4 +19,8 @@
 <main class="main">
 <%- body %>
 </main>
-<%- include('footer') %>
+<footer class="footer">
+    <small>&copy; 2024 Team Oreneta. Website made by <a href="https://poyo.study">Poyo!</a> for High Seas (by Hack Club). All rights reserved.</small>
+</footer>
+</body>
+</html>

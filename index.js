@@ -1,192 +1,105 @@
 const fs = require('fs-extra');
 const path = require('path');
+const showdown = require('showdown');
 const ejs = require('ejs');
-const { read } = require('fs');
-const marked = require('marked');
 
-// Markdown renderer
-const markdownRenderer = (markdown) => marked.parse(markdown);
+const mdProcessor = new showdown.Converter({
+    tables: true,
+    ghCompatibleHeaderId: true,
+    simplifiedAutoLink: true,
+    strikethrough: true,
+    tasklists: true,
+    metadata: true,
+});
 
-// Directory paths
 const srcDir = path.join(__dirname, 'src');
-const templatesDir = path.join(srcDir, 'templates');
-const outputDir = path.join(__dirname, 'dist');
-const staticDir = 'static';
+const srcStaticDir = path.join(srcDir, 'static');
+const distDir = path.join(__dirname, 'dist');
+const distStaticDir = path.join(distDir, 'static');
+const contentDir = path.join(srcDir, 'pages');
 const outputStaticDir = '/static';
-const blogDir = '/blog/';
+const templateDir = path.join(srcDir, 'templates');
 
-// Ensure the output directory exists
-if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir);
-    fs.mkdirSync(path.join(outputDir, staticDir));
-}
-
-function readDir(dir) {
-    const files = fs.readdirSync(dir);
-    let pages = [];
-    files.forEach(file => {
-        const filePath = path.join(dir, file);
-        const stats = fs.statSync(filePath
-        );
-        if (stats.isDirectory()) {
-            pages = pages.concat(readDir(filePath));
+function dirWalker(dir) {
+    let results = [];
+    const list = fs.readdirSync(dir);
+    list.forEach(function(file) {
+        file = path.join(dir, file);
+        const stat = fs.statSync(file);
+        if (stat && stat.isDirectory()) {
+            results = results.concat(dirWalker(file));
         } else {
-            const data = fs.readFileSync(filePath, 'utf8');
-            pages.push({
-                name: file.replace(path.extname(file), ''),
-                cleanPath: filePath.replace(pagesDir, '').replace(path.extname(file), '.html').replace(/\\/g, '/'),
-                baseDir: filePath.replace(pagesDir, '').replace(file, ''),
-                filename: file.replace(path.extname(file), '.html'),
-                path: filePath,
-                body: data,
-                creationDate: stats.birthtime,
-                lastModifiedDate: stats.mtime,
-                directory: false
+            if (path.extname(file) === '.md') {
+                const body = mdProcessor.makeHtml(fs.readFileSync(file, 'utf8'));
+                return results.push({
+                    file: file,
+                    cleanPath: file.replace(contentDir, ''),
+                    targetFileName: file.replace(contentDir, '').replace('.md', '.html'),
+                    baseDir: path.dirname(file).replace(contentDir, ''),
+                    createdAt: stat.birthtime,
+                    modifiedAt: stat.mtime,
+                    body: body || '',
+                    metadata: mdProcessor.getMetadata(), // Placeholder for metadata extraction
+                    isMarkdown: true,
+                });
+            }
+            results.push({
+                file: file,
+                targetFileName: file.replace(contentDir, '').replace('.ejs', '.html'),
+                cleanPath: file.replace(contentDir, ''),
+                baseDir: path.dirname(file).replace(contentDir, ''),
+                createdAt: stat.birthtime,
+                modifiedAt: stat.mtime,
+                isMarkdown: false,
             });
         }
     });
-    return pages;
+    return results;
+}
+
+console.log('Reading content directory...');
+const files = dirWalker(contentDir);
+console.log('Content directory read.');
+
+
+var projectPosts = files.filter(function(file) {
+    return file.cleanPath.includes(path.normalize('/projects/')) && !file.cleanPath.includes('index.ejs');
+});
+
+var blogPosts = files.filter(function(file) {
+    return file.cleanPath.includes(path.normalize('/blog/')) && !file.cleanPath.includes('index.ejs');
+});
+
+function renderProjectIndex() {
+    const destDir = path.join(distDir, 'projects', 'index.html');
+    fs.ensureDirSync(path.join(distDir, 'projects'));
+    const templateData = { static: outputStaticDir, body: null, title: "Team Oreneta's Projects", description: "A list of our cool stuff!", posts: projectPosts };
+    const baseTemplate = fs.readFileSync(path.join(templateDir, 'base.ejs'), 'utf8');
+    const projectTemplate = fs.readFileSync(path.join(templateDir, 'blog.ejs'), 'utf8');
+    const projectHtml = ejs.render(projectTemplate, templateData);
+    const renderedHtml = ejs.render(baseTemplate, { body: projectHtml, title: "Team Oreneta Projects", description: "A list of our cool stuff!", static: outputStaticDir });
+    fs.writeFileSync(destDir, renderedHtml);
 }
 
 function renderBlogIndex() {
-    const dir = path.join(pagesDir, 'blog');
-    const files = fs.readdirSync(dir);
-    let posts = [];
-    files.forEach(file => {
-        const filePath = path.join(dir, file);
-        const stats = fs.statSync(filePath);
-        if (stats.isDirectory()) {
-            posts = posts.concat(readBlogPosts(filePath));
-        } else if (file.endsWith('.md')) {
-            const data = fs.readFileSync(filePath, 'utf8');
-            const lines = data.split('\n');
-            let title;
-            let description;
-            let author;
-            let body;
-            let inFrontMatter = false;
-
-            lines.forEach(line => {
-                if (line.startsWith('---')) {
-                    inFrontMatter = !inFrontMatter;
-                } else if (inFrontMatter) {
-                    if (line.startsWith('title:')) {
-                        title = line.replace('title:', '').trim();
-                    } else if (line.startsWith('description:')) {
-                        description = line.replace('description:', '').trim();
-                    } else if (line.startsWith('author:')) {
-                        author = line.replace('author:', '').trim();
-                    }
-                } else {
-                    body += line + '\n';
-                }
-            });
-
-            posts.push({
-                name: file.replace('.md', ''),
-                cleanPath: filePath.replace(pagesDir, '').replace('.md', '.html').replace(/\\/g, '/'),
-                filename: file.replace('.md', '.html'),
-                path: filePath,
-                body: body.trim(),
-                title: title,
-                description: description,
-                author: author,
-                creationDate: stats.birthtime,
-                lastModifiedDate: stats.mtime,
-                directory: false
-            });
-        }
-    });
-    var arguments = { static: outputStaticDir, body: null, title: "Team Oreneta's Blog", description: "Team Oreneta's Blog!", posts: posts };
-    fs.ensureDirSync(path.dirname(path.join(outputDir, blogDir, 'index.html')));
-    ejs.renderFile(path.join(templatesDir, 'blog.ejs'), arguments, (err, str) => {
-        if (err) {
-            console.error(`Error rendering blog.ejs:`, err);
-            return;
-        }
-        ejs.renderFile(path.join(templatesDir, "base.ejs"), { static: outputStaticDir, body: str, title: "Team Oreneta's Blog", description: "Team Oreneta's Blog!"}, (err, str) => {
-            if (err) {
-                console.error(`Error rendering base.ejs:`, err);
-                return;
-            }
-            fs.writeFileSync(path.join(outputDir, blogDir, 'index.html'), str);
-        });
-        console.log(`Created: ${path.join(blogDir, 'index.html')}`);
-    });
+    const destDir = path.join(distDir, 'blog', 'index.html');
+    fs.ensureDirSync(path.join(distDir, 'blog'));
+    const templateData = { static: outputStaticDir, body: null, title: "Team Oreneta's Blog", description: "Our very own Blog!", posts: blogPosts };
+    const baseTemplate = fs.readFileSync(path.join(templateDir, 'base.ejs'), 'utf8');
+    const projectTemplate = fs.readFileSync(path.join(templateDir, 'blog.ejs'), 'utf8');
+    const projectHtml = ejs.render(projectTemplate, templateData);
+    const renderedHtml = ejs.render(baseTemplate, { body: projectHtml, title: "Team Oreneta's Blog", description: "Our very own Blog!", static: outputStaticDir });
+    fs.writeFileSync(destDir, renderedHtml);
 }
 
-function renderPage(page) {
-    const templatePath = path.join(templatesDir, "base.ejs");
-    const outputPath = path.join(outputDir, page.cleanPath);
-    var arguments = { static: outputStaticDir, body: null, title: page.name, description: "We make cool stuff!" };
-    arguments.body = ejs.render(page.body, arguments);
-    if (page.path.endsWith('.md')) {
-        const lines = page.body.split('\n');
-        let inFrontMatter = false;
-        let body = '';
+fs.writeFileSync(path.join(distDir, 'index.html'), ejs.render(fs.readFileSync(path.join(srcDir, 'pages', 'index.ejs'), 'utf8'), { static: outputStaticDir, title: "Team Oreneta", description: "We make cool stuff!" }));
 
-        let title, description, author;
-        lines.forEach(line => {
-            if (line.startsWith('---')) {
-            inFrontMatter = !inFrontMatter;
-            } else if (inFrontMatter) {
-            if (line.startsWith('title:')) {
-                title = line.replace('title:', '').trim();
-            } else if (line.startsWith('description:')) {
-                description = line.replace('description:', '').trim();
-            } else if (line.startsWith('author:')) {
-                author = line.replace('author:', '').trim();
-            }
-            } else {
-            body += line + '\n';
-            }
-        });
-        arguments.title = title || page.name;
-        arguments.description = description || "We make cool stuff!";
-        arguments.author = author || "Unknown";
-        let cleanBody = markdownRenderer(body.trim());
-        arguments.body = ejs.render(fs.readFileSync(path.join(templatesDir, "blogPost.ejs"), 'utf8'), { static: outputStaticDir, content: cleanBody, title: title, description: description, author: author, creationDate: page.creationDate, lastModifiedDate: page.lastModifiedDate });
-    }
-    fs.ensureDirSync(path.dirname(outputPath));
-    ejs.renderFile(templatePath, arguments, (err, str) => {
-        if (err) {
-            console.error(`Error rendering ${templatePath}:`, err);
-            return;
-        }
-        if (!fs.existsSync(path.dirname(outputPath))) {
-            fs.mkdirSync(path.dirname(page.path), { recursive: true });
-        }
-        fs.writeFileSync(outputPath, str);
-        console.log(`Created: ${page.cleanPath}`);
-    });
-}
+renderBlogIndex();
+renderProjectIndex();
 
-const pagesDir = path.join(srcDir, 'pages');
-const pages = readDir(pagesDir);
-
-// Render pages
-if (pages.length === 0) {
-    console.error('No pages found');
-    return;
-}
-
-fs.removeSync(path.join(outputDir, staticDir));
-fs.removeSync(path.join(outputDir, blogDir));
-
-pages.forEach(page => {
-    if (page.baseDir != blogDir) {
-        renderPage(page);
-    } else if (page.path == path.join(pagesDir, 'blog', 'index.ejs')) {
-        renderBlogIndex();
-    } else {
-        renderPage(page);
-    }
-});
-
-// Copy static files
-const staticSrcDir = path.join(srcDir, staticDir);
-if (fs.existsSync(staticSrcDir)) {
-    fs.copySync(staticSrcDir, path.join(outputDir, staticDir));
+// Copy static files;
+if (fs.existsSync(distStaticDir)) {
+    fs.copySync(srcStaticDir, distStaticDir);
 } else {
-    console.warn(`Static directory not found: ${staticSrcDir}`);
+    console.warn(`Static directory not found: ${distStaticDir}`);
 }

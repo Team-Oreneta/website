@@ -1,7 +1,7 @@
 <% posts.forEach(post => { %>
   <div>
-    <a href="<%= post.cleanPath %>"><h2><%= post.title %></h2></a>
-    <p><%= post.description %></p>
-    <small>Written by <%= post.author%> - <%= post.creationDate %></small>
+    <a href="<%= post.targetFileName %>"><h2><%= post.metadata.title %></h2></a>
+    <p><%= post.metadata.description %></p>
+    <small>Written by <%= post.metadata.author%> - <%= post.createdAt %></small>
   </div>
 <% }) %>
