@@ -32,6 +32,17 @@ h1, h2, h3, h4, h5, h6 {
 a {
     color: var(--text-color);
 }
+table {
+    border-collapse: collapse;
+    width: 100%;
+    padding: 1vh;
+    border: var(--border-color) 1px solid;
+    border-radius: 5px;
+}
+td {
+    border: var(--border-color) 1px dashed;
+    padding: 1vh;
+}
 .main {
     display: flex;
     flex-direction: column;
