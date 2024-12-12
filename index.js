@@ -170,6 +170,9 @@ if (pages.length === 0) {
     return;
 }
 
+fs.removeSync(path.join(outputDir, staticDir));
+fs.removeSync(path.join(outputDir, blogDir));
+
 pages.forEach(page => {
     if (page.baseDir != blogDir) {
         renderPage(page);
