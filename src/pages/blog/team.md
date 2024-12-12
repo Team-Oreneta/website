@@ -9,7 +9,7 @@ description: A quick resume of Team Oreneta's members.
 
 Howdy, fellow internaut! Looks like you've stumbled upon our smol website, or perhaps someone just sent it to you.
 Anyways, we will first introduce ourselves. At the time of writing this post, we're 3 founding members; *Segfault*, *Jake* and, last but not less important, *Poyo*. 
-| Name     | Specialty                     | Country |   Side Projects              |
+| Name     | Specialty                     | Country |     Coolest Side Projects    |
 |----------|-------------------------------|---------|------------------------------|
 | Segfault | Low Level Programming         | USA     | Oreneta OS                   |
 | Jake     | SysAdmin & Unix/Linux Nerdery | USA     | Future Computing,            |
