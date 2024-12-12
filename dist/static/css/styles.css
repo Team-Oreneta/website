@@ -48,7 +48,6 @@ td {
     flex-direction: column;
     flex-grow: 1;
     min-width: 75%;
-    min-height: 80%;
     margin-inline: auto;
     padding: 1vh;
     border: var(--border-color) 1px solid;
