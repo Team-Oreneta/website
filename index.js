@@ -119,15 +119,27 @@ function renderPage(page) {
         let inFrontMatter = false;
         let body = '';
 
+        let title, description, author;
         lines.forEach(line => {
             if (line.startsWith('---')) {
             inFrontMatter = !inFrontMatter;
-            } else if (!inFrontMatter) {
+            } else if (inFrontMatter) {
+            if (line.startsWith('title:')) {
+                title = line.replace('title:', '').trim();
+            } else if (line.startsWith('description:')) {
+                description = line.replace('description:', '').trim();
+            } else if (line.startsWith('author:')) {
+                author = line.replace('author:', '').trim();
+            }
+            } else {
             body += line + '\n';
             }
         });
-
-        arguments.body = markdownRenderer(body.trim());
+        arguments.title = title || page.name;
+        arguments.description = description || "We make cool stuff!";
+        arguments.author = author || "Unknown";
+        let cleanBody = markdownRenderer(body.trim());
+        arguments.body = ejs.render(fs.readFileSync(path.join(templatesDir, "blogPost.ejs"), 'utf8'), { static: outputStaticDir, content: cleanBody, title: title, description: description, author: author, creationDate: page.creationDate, lastModifiedDate: page.lastModifiedDate });
     }
     fs.ensureDirSync(path.dirname(outputPath));
     ejs.renderFile(templatePath, arguments, (err, str) => {
