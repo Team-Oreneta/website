@@ -19,3 +19,8 @@ We met on [Hack Club](https://hackclub.com)'s Slack while chatting about operati
 
 Team Oreneta came after Oreneta, when we three decided to create a team out of this *wonderful* project!
 We wanted to collaborate on more stuff than just Oreneta (for instance, (The PoyoWeb!)[https://poyoweb.org]), because we really like working with eachother. <3
+
+And well, that's really it! We have become friends all together and enjoy spending our spare time coding.
+Thanks for your attention!
+
+--Poyo!
