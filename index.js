@@ -34,7 +34,7 @@ function dirWalker(dir) {
                 return results.push({
                     file: file,
                     cleanPath: file.replace(contentDir, ''),
-                    targetFileName: file.replace(contentDir, '').replace('.md', '.html'),
+                    targetFileName: file.replace(contentDir, '').replace(/\\/g, '/').replace('.md', '.html'),
                     baseDir: path.dirname(file).replace(contentDir, ''),
                     createdAt: stat.birthtime,
                     modifiedAt: stat.mtime,
@@ -45,7 +45,7 @@ function dirWalker(dir) {
             }
             results.push({
                 file: file,
-                targetFileName: file.replace(contentDir, '').replace('.ejs', '.html'),
+                targetFileName: file.replace(contentDir, '').replace('.ejs', '.html').replace('.md', '.html'),
                 cleanPath: file.replace(contentDir, ''),
                 baseDir: path.dirname(file).replace(contentDir, ''),
                 createdAt: stat.birthtime,
