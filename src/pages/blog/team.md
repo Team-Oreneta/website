@@ -12,5 +12,5 @@ Anyways, we will first introduce ourselves. At the time of writing this post, we
 | Name     | Specialty     | Country       |
 |----------|---------------|---------------|
 | Segfault | Low Level Programming     | USA           |
-| Jake     | SysAdmin      |    USA        |
+| Jake     | SysAdmin & Unix/Linux Stuff      |    USA        |
 | Poyo     | Project Lead and Web Dev | Spain         |
