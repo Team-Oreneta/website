@@ -107,3 +107,21 @@ if (fs.existsSync(distStaticDir)) {
 } else {
     console.warn(`Static directory not found: ${distStaticDir}`);
 }
+
+blogPosts.forEach(post => {
+    const destDir = path.join(distDir, post.targetFileName);
+    fs.ensureDirSync(path.dirname(destDir));
+    const templateData = { static: outputStaticDir, body: post.body, title: post.metadata.title || "Blog Post", description: post.metadata.description || "Blog Post" };
+    const baseTemplate = fs.readFileSync(path.join(templateDir, 'base.ejs'), 'utf8');
+    const postHtml = ejs.render(baseTemplate, templateData);
+    fs.writeFileSync(destDir, postHtml);
+});
+
+projectPosts.forEach(post => {
+    const destDir = path.join(distDir, post.targetFileName);
+    fs.ensureDirSync(path.dirname(destDir));
+    const templateData = { static: outputStaticDir, body: post.body, title: post.metadata.title || "Project Post", description: post.metadata.description || "Project Post" };
+    const baseTemplate = fs.readFileSync(path.join(templateDir, 'base.ejs'), 'utf8');
+    const postHtml = ejs.render(baseTemplate, templateData);
+    fs.writeFileSync(destDir, postHtml);
+});
