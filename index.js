@@ -92,7 +92,11 @@ function renderBlogIndex() {
     fs.writeFileSync(destDir, renderedHtml);
 }
 
-fs.writeFileSync(path.join(distDir, 'index.html'), ejs.render(fs.readFileSync(path.join(srcDir, 'pages', 'index.ejs'), 'utf8'), { static: outputStaticDir, title: "Team Oreneta", description: "We make cool stuff!" }));
+const indexTemplate = fs.readFileSync(path.join(srcDir, 'pages', 'index.ejs'), 'utf8');
+const baseTemplate = fs.readFileSync(path.join(templateDir, 'base.ejs'), 'utf8');
+const indexHtml = ejs.render(indexTemplate, { static: outputStaticDir, title: "Team Oreneta", description: "We make cool stuff!" });
+const renderedHtml = ejs.render(baseTemplate, { body: indexHtml, title: "Team Oreneta", description: "We make cool stuff!", static: outputStaticDir });
+fs.writeFileSync(path.join(distDir, 'index.html'), renderedHtml);
 
 renderBlogIndex();
 renderProjectIndex();
