@@ -11,7 +11,7 @@ Howdy, fellow internaut! Looks like you've stumbled upon our smol website, or pe
 Anyways, we will first introduce ourselves. At the time of writing this post, we're 3 founding members; *Segfault*, *Jake* and, last but not less important, *Poyo*. 
 | Name     | Specialty                     | Country |     Coolest Side Projects    |
 |----------|-------------------------------|---------|------------------------------|
-| Segfault | Low Level Programming         | USA     | Oreneta OS                                               |
+| Segfault | Low Level Programming         | USA     | Rust web browser and chat application |
 | Jake     | SysAdmin & Unix/Linux Nerdery | USA     | Future Computing. LLC, Protect Open Source, A lot more |
 | Poyo     | Project Lead and Web Dev      | Spain   | PoyoWeb, Pictoroom, TOO MANY PROJECTS           |
 
