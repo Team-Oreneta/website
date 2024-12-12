@@ -11,9 +11,9 @@ Howdy, fellow internaut! Looks like you've stumbled upon our smol website, or pe
 Anyways, we will first introduce ourselves. At the time of writing this post, we're 3 founding members; *Segfault*, *Jake* and, last but not less important, *Poyo*. 
 | Name     | Specialty                     | Country |     Coolest Side Projects    |
 |----------|-------------------------------|---------|------------------------------|
-| Segfault | Low Level Programming         | USA     | Oreneta OS                   |
-| Jake     | SysAdmin & Unix/Linux Nerdery | USA     | Future Computing,            |
-| Poyo     | Project Lead and Web Dev      | Spain   | PoyoWeb, Pictoroom           |
+| Segfault | Low Level Programming         | USA     | Oreneta OS                                               |
+| Jake     | SysAdmin & Unix/Linux Nerdery | USA     | Future Computing. LLC, Protect Open Source, A lot more |
+| Poyo     | Project Lead and Web Dev      | Spain   | PoyoWeb, Pictoroom, TOO MANY PROJECTS           |
 
 We met on [Hack Club](https://hackclub.com)'s Slack while chatting about operating systems (we were very bored). After some minutes of yapping, we all came to the conclusion we should just make our very own OS! That's how [Oreneta](/projects/oreneta) was born, and therefore __Team Oreneta__.
 
