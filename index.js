@@ -104,7 +104,13 @@ function renderBlogIndex() {
             console.error(`Error rendering blog.ejs:`, err);
             return;
         }
-        fs.writeFileSync(path.join(outputDir, blogDir, 'index.html'), str);
+        ejs.renderFile(path.join(templatesDir, "base.ejs"), { static: outputStaticDir, body: str, title: "Team Oreneta's Blog", description: "Team Oreneta's Blog!"}, (err, str) => {
+            if (err) {
+                console.error(`Error rendering base.ejs:`, err);
+                return;
+            }
+            fs.writeFileSync(path.join(outputDir, blogDir, 'index.html'), str);
+        });
         console.log(`Created: ${path.join(blogDir, 'index.html')}`);
     });
 }
