@@ -1,0 +1,7 @@
+<% posts.forEach(post => { %>
+  <div>
+    <a href="<%= post.cleanPath %>"><h2><%= post.title %></h2></a>
+    <p><%= post.description %></p>
+    <small>Written by <%= post.author%> - <%= post.creationDate %></small>
+  </div>
+<% }) %>
